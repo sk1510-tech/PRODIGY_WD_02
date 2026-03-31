@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stopwatch with Milliseconds</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #222;
+            color: white;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #display {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .start { background: green; color: white; }
+        .pause { background: orange; color: white; }
+        .reset { background: red; color: white; }
+        .lap { background: blue; color: white; }
+
+        ul {
+            margin-top: 20px;
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 5px;
+            border-bottom: 1px solid #555;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Stopwatch</h1>
+
+    <!-- Display -->
+    <div id="display">00:00:00:00</div>
+
+    <!-- Buttons -->
+    <button class="start" onclick="start()">Start</button>
+    <button class="pause" onclick="pause()">Pause</button>
+    <button class="reset" onclick="reset()">Reset</button>
+    <button class="lap" onclick="lap()">Lap</button>
+
+    <!-- Lap Times -->
+    <ul id="laps"></ul>
+
+    <script>
+        let ms = 0;
+        let seconds = 0;
+        let minutes = 0;
+        let hours = 0;
+        let timer = null;
+
+        function updateDisplay() {
+            let h = hours < 10 ? "0" + hours : hours;
+            let m = minutes < 10 ? "0" + minutes : minutes;
+            let s = seconds < 10 ? "0" + seconds : seconds;
+            let milli = ms < 10 ? "0" + ms : ms;
+
+            document.getElementById("display").innerText = h + ":" + m + ":" + s + ":" + milli;
+        }
+
+        function start() {
+            if (timer !== null) return;
+
+            timer = setInterval(() => {
+                ms++;
+
+                if (ms == 100) {
+                    ms = 0;
+                    seconds++;
+                }
+
+                if (seconds == 60) {
+                    seconds = 0;
+                    minutes++;
+                }
+
+                if (minutes == 60) {
+                    minutes = 0;
+                    hours++;
+                }
+
+                updateDisplay();
+            }, 10); // 10ms = milliseconds effect
+        }
+
+        function pause() {
+            clearInterval(timer);
+            timer = null;
+        }
+
+        function reset() {
+            clearInterval(timer);
+            timer = null;
+
+            ms = 0;
+            seconds = 0;
+            minutes = 0;
+            hours = 0;
+
+            updateDisplay();
+            document.getElementById("laps").innerHTML = "";
+        }
+
+        function lap() {
+            let lapTime = document.getElementById("display").innerText;
+            let li = document.createElement("li");
+            li.innerText = "Lap: " + lapTime;
+            document.getElementById("laps").appendChild(li);
+        }
+    </script>
+
+</body>
+</html>
